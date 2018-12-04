@@ -43,10 +43,12 @@ dfAll <- aggregate(Global_Sales ~ Name, transform(vgsales, Name = sub("\\d+$",""
 classementAll <- arrange(dfAll, desc(Global_Sales)) 
 topAll <- subset(classementAll, Global_Sales %in% Global_Sales[1:10])
 
+#Couleurs
 dd <- union(union(union(union(union(top10$Name, topAll$Name), top2016$Name), top2015$Name), top2014$Name), top2013$Name)
 dd.col <- rainbow(length(dd))
 names(dd.col)  <- dd
 
+#Plots
 ggplot(data = top10, aes(x= reorder(Name, Global_Sales), y=Global_Sales, fill = Name)) + geom_bar(stat="identity", show.legend = FALSE) + coord_flip() + xlab("Jeu Vidéo") + ylab("Nombre de ventes dans le monde") + ggtitle("Top 10 des jeux vidéos les plus vendus") + scale_fill_manual("Legend", values = dd.col)
 ggplot(data = topAll, aes(x= reorder(Name, Global_Sales), y=Global_Sales, fill = Name)) + geom_bar(stat="identity", show.legend = FALSE) + coord_flip() + xlab("Jeu Vidéo") + ylab("Nombre de ventes dans le monde") + ggtitle("Top 10 des jeux vidéos les plus vendus de tous les temps") + scale_fill_manual("Legend", values = dd.col)
 
@@ -67,12 +69,27 @@ grid.arrange(g1, g2, g3, g4, ncol=2)
 #celui qui produit le plus
 editeurs <- count(df = vgsales, vars = c("Publisher"))
 classement_editeurs <- arrange(editeurs, desc(freq))
+classement_editeurs5 <- subset(classement_editeurs, freq %in% freq[1:5])
 
 #Quel est l'éditeur « favori » des joueurs ? 
 #Celui qui vend le plus
 favoris <- ddply(vgsales, c("Publisher"), function(x){sum(x$Global_Sales)})
 classement_favoris <- arrange(favoris, desc(V1))
+classement_favoris5 <- subset(classement_favoris, V1 %in% V1[1:5])
 #-->Editeur favori : Nintendo
+
+#Couleurs
+dd <- union(classement_editeurs5$Publisher, classement_favoris5$Publisher)
+dd.col <- rainbow(length(dd))
+names(dd.col)  <- dd
+
+#Plots
+ggplot(data = classement_editeurs5, aes(x= reorder(Publisher, desc(freq)), y=freq, fill = Publisher)) + geom_bar(stat="identity", show.legend = FALSE) + ylab("Nombre de jeux vidéos publiés") + xlab("Editeurs les plus productifs") + ggtitle("Les 5 éditeurs de jeux vidéos les plus productifs") + scale_fill_manual("Legend", values = dd.col)
+ggplot(data = classement_favoris5, aes(x= reorder(Publisher, desc(V1)), y=V1, fill = Publisher)) + geom_bar(stat="identity", show.legend = FALSE) + ylab("Nombre de jeux vidéos vendus") + xlab("Editeurs favoris") + ggtitle("Les 5 éditeurs de jeux vidéos favoris") + scale_fill_manual("Legend", values = dd.col)
+
+
+
+
 
 #Mérite-t-il toujours son titre aujourd'hui ?
 #Evolution des ventes au cours des années
