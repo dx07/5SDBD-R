@@ -84,8 +84,8 @@ dd.col <- rainbow(length(dd))
 names(dd.col)  <- dd
 
 #Plots
-ggplot(data = classement_editeurs5, aes(x= reorder(Publisher, desc(freq)), y=freq, fill = Publisher)) + geom_bar(stat="identity", show.legend = FALSE) + ylab("Nombre de jeux vidéos publiés") + xlab("Editeurs les plus productifs") + ggtitle("Les 5 éditeurs de jeux vidéos les plus productifs") + scale_fill_manual("Legend", values = dd.col)
-ggplot(data = classement_favoris5, aes(x= reorder(Publisher, desc(V1)), y=V1, fill = Publisher)) + geom_bar(stat="identity", show.legend = FALSE) + ylab("Nombre de jeux vidéos vendus") + xlab("Editeurs favoris") + ggtitle("Les 5 éditeurs de jeux vidéos favoris") + scale_fill_manual("Legend", values = dd.col)
+ggplot(data = classement_editeurs5, aes(x= reorder(Publisher, desc(freq)), y=freq, fill = Publisher)) + geom_bar(stat="identity", show.legend = FALSE) + ylab("Nombre de publications") + xlab("Editeurs") + ggtitle("Les 5 éditeurs de jeux vidéos les plus productifs") + scale_fill_manual("Legend", values = dd.col)
+ggplot(data = classement_favoris5, aes(x= reorder(Publisher, desc(V1)), y=V1, fill = Publisher)) + geom_bar(stat="identity", show.legend = FALSE) + ylab("Nombre de ventes") + xlab("Editeurs") + ggtitle("Les 5 éditeurs de jeux vidéos favoris") + scale_fill_manual("Legend", values = dd.col)
 
 
 
