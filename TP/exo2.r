@@ -33,7 +33,7 @@ prenLen = ddply(prenoms, c("Ann√.e","Sexe","Pr√.nom"), summarise,Taille=nchar(to
 prenLen = ddply(prenLen, c("Ann√.e"),summarise,Moyenne=mean(Taille))
 ggplot(data=prenLen, aes(x=Ann√.e, y=Moyenne)) + geom_point(size=2) + geom_line(size=1) + ggtitle("Taille moyenne des Pr√.noms par Ann√.e") + xlab("Ann√.es") + ylab("Nombre de lettres") + scale_x_continuous(breaks = seq(2003, 2012))
 
-a = 
+a = "test"
 a[a %in% vowels]
 a[a %in% setdiff(letters,vowels)]
 
