@@ -14,11 +14,11 @@ library(gridExtra)
 head(vgsales)
 
 
-#Top 10 des jeux vidéos les plus vendus années confondues // années spécifiques
+#Top 10 des jeux vidéo les plus vendus années confondues // années spécifiques
 classement <- arrange(vgsales, desc(Global_Sales))
 top10 <- subset(classement, Global_Sales %in% Global_Sales[1:10])
 
-#Top 10 des jeux vidéos les plus vendus de tous les temps
+#Top 10 des jeux vidéo les plus vendus de tous les temps
 dfAll <- aggregate(Global_Sales ~ Name, vgsales, sum)
 classementAll <- arrange(dfAll, desc(Global_Sales)) 
 topAll <- subset(classementAll, Global_Sales %in% Global_Sales[1:10])
@@ -111,19 +111,27 @@ ggplot(data = classement_favoris5, aes(x= reorder(Publisher, desc(V1)), y=V1, fi
 
 #Mérite-t-il toujours son titre aujourd'hui ?
 #Evolution des ventes au cours des années
-top5 = gsub("\n"," ",classement_favoris5$Publisher)
-favoris = subset(vgsales,Publisher %in% top5 &  Year != "N/A" & strtoi(Year) < 2016 & strtoi(Year) > 2004)
+favoris5 = gsub("\n"," ",classement_favoris5$Publisher)
+favoris = subset(vgsales,Publisher %in% favoris5 &  Year != "N/A" & strtoi(Year) < 2016 & strtoi(Year) > 1994)
+favoris$Year = strtoi(favoris$Year)
 favoris_year = ddply(favoris, c("Year","Publisher"), function(x){sum(x$Global_Sales)})
-ggplot(data = favoris_year, aes(x = Year, y = V1, color = Publisher)) + geom_point(size=2) + geom_line(size=1) + xlab("Année") + ylab("Nombre de ventes") + ggtitle("Evolution du nombre de ventes annuelles des éditeurs favoris") + scale_x_discrete(breaks =seq(2005, 2015, by = 1))
+ggplot(data = favoris_year, aes(x = Year, y = V1, color = Publisher)) + 
+  geom_point(size=2) + 
+  geom_line(size=1) + 
+  xlab("Année") + 
+  ylab("Nombre de ventes en millions d'exemplaires") + 
+  ggtitle("Evolution du nombre de ventes annuelles des éditeurs favoris") +
+  scale_x_continuous(breaks = seq(1995, 2015,2))
 
-#nintendo <- subset(vgsales, Publisher == "Nintendo")
-#nintendo_peryear <- ddply(nintendo, c("Year"), function(x){sum(x$Global_Sales)})
-#ggplot(data = subset(nintendo_peryear, Year != "N/A"), aes(x = Year, y = V1, group=1)) + geom_line(size=2, color = "#0066CC") + scale_x_discrete(breaks =seq(1983, 2016, by = 2)) + xlab("Année") + ylab("Nombre de ventes") + ggtitle("Evolution du nombre de ventes annuelles de Nintendo")
 
-
-
-
-
+# Les ventes US / JP
+origin_year = subset(vgsales, Year != "N/A" & strtoi(Year) < 2016 & strtoi(Year) > 1995)
+origin_year$Year = strtoi(origin_year$Year)
+origin_us = subset(vgsales, Publisher %in% c("Electronic Arts","Activision"))
+origin_jp = subset(vgsales, Publisher %in% c("Nintendo","Sony Computer Entertainment"))
+origin_us$Publisher = "American"
+origin_jp$Publisher = "Japanese"
+origin_all = rbind(origin_us, origin_jp)
 
 
 
