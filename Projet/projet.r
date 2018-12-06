@@ -13,7 +13,6 @@ library(gridExtra)
 
 head(vgsales)
 
-
 #Top 10 des jeux vidéo les plus vendus années confondues // années spécifiques
 classement <- arrange(vgsales, desc(Global_Sales))
 top10 <- subset(classement, Global_Sales %in% Global_Sales[1:10])
@@ -190,12 +189,26 @@ grid.arrange(g1, g2, g3, g4, ncol=2, top="Volume des ventes de jeux vidéo selon 
 
 #Evolution pour chaque genre
 genres = gsub("\n"," ",unique(vgsales$Genre))
-g = subset(vgsales, Genre %in% genres &  Year != "N/A" & strtoi(Year) < 2016& strtoi(Year) > 1995)
+g = subset(vgsales, Genre %in% genres &  Year != "N/A" & strtoi(Year) < 2016 & strtoi(Year) > 1995)
 g$Year = strtoi(g$Year)
-genres_year = ddply(g, c("Year","Genre"), function(x){sum(x$Global_Sales)})
-ggplot(data = genres_year, aes(x = Year, y = V1, color = Genre)) + 
+genres_year = ddply(g, c("Year","Genre"), summarise, Global_Sales = sum(Global_Sales))
+
+g2014 = subset(genres_year, Year == 2014)
+g2015 = subset(genres_year, Year == 2015)
+
+for (row in 1:nrow(g2014)) {
+  s2014 = g2014[row, "Global_Sales"]
+  s2015 = g2015[row, "Global_Sales"]
+  s2016 = s2015 + (s2015-s2014)
+  if(s2016 < 0) s2016 = 0
+  genres_year = rbind(genres_year,list(2016,g2014[row, "Genre"],s2016))
+}
+
+ggplot(data = genres_year, aes(x = Year, y = Global_Sales, color = Genre)) + 
+  geom_point(size=2) + 
   geom_line(size=1) + 
   xlab("Année") + 
   ylab("Nombre de ventes en millions d'exemplaires") + 
   ggtitle("Evolution du nombre de ventes annuelles par genre") +
-  scale_x_continuous(breaks = seq(1995, 2015,2))
+  scale_x_continuous(breaks = seq(1996, 2016,2))
+
