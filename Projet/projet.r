@@ -188,3 +188,14 @@ g4 = ggplot(origin_syn2, aes(x="", y=V2, fill=Publisher))+
 grid.arrange(g1, g2, g3, g4, ncol=2, top="Volume des ventes de jeux vidéo selon leur origine (sur les 4 éditeurs les plus populaires)")
 
 
+#Evolution pour chaque genre
+genres = gsub("\n"," ",unique(vgsales$Genre))
+g = subset(vgsales, Genre %in% genres &  Year != "N/A" & strtoi(Year) < 2016& strtoi(Year) > 1995)
+g$Year = strtoi(g$Year)
+genres_year = ddply(g, c("Year","Genre"), function(x){sum(x$Global_Sales)})
+ggplot(data = genres_year, aes(x = Year, y = V1, color = Genre)) + 
+  geom_line(size=1) + 
+  xlab("Année") + 
+  ylab("Nombre de ventes en millions d'exemplaires") + 
+  ggtitle("Evolution du nombre de ventes annuelles par genre") +
+  scale_x_continuous(breaks = seq(1995, 2015,2))
