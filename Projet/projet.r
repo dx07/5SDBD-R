@@ -45,29 +45,29 @@ top2016 <- subset(classement2016, Global_Sales %in% Global_Sales[1:10])
 
 dd.col <- rainbow(length(top10$Name))
 names(dd.col) <- top10$Name
-ggplot(data = top10, aes(x= reorder(paste(Name, Platform, sep=" - "), Global_Sales), y=Global_Sales, fill = Name)) + geom_bar(stat="identity", show.legend = FALSE) + coord_flip() + xlab("Jeu Vidéo") + ylab("Nombre de ventes dans le monde") + ggtitle("Top 10 des jeux vidéo les plus vendus de tous les temps sur une console") + scale_fill_manual("Legend", values = dd.col)
+ggplot(data = top10, aes(x= reorder(paste(Name, Platform, sep=" - "), Global_Sales), y=Global_Sales, fill = Name)) + geom_bar(stat="identity", show.legend = FALSE) + coord_flip() + xlab("Jeu Vidéo") + ylab("Nombre de ventes en M") + ggtitle("Top 10 des jeux vidéo les plus vendus de tous les temps dans le monde sur une console") + scale_fill_manual("Legend", values = dd.col)
 
 dd.col <- rainbow(length(topAll$Name))
 names(dd.col) <- topAll$Name
-ggplot(data = topAll, aes(x= reorder(Name, Global_Sales), y=Global_Sales, fill = Name)) + geom_bar(stat="identity", show.legend = FALSE) + coord_flip() + xlab("Jeu Vidéo") + ylab("Nombre de ventes dans le monde") + ggtitle("Top 10 des jeux vidéo les plus vendus de tous les temps toute console confondue") + scale_fill_manual("Legend", values = dd.col)
+ggplot(data = topAll, aes(x= reorder(Name, Global_Sales), y=Global_Sales, fill = Name)) + geom_bar(stat="identity", show.legend = FALSE) + coord_flip() + xlab("Jeu Vidéo") + ylab("Nombre de ventes en M") + ggtitle("Top 10 des jeux les plus vendus de tous les temps dans le monde toute console confondue") + scale_fill_manual("Legend", values = dd.col)
 
 dd.col <- rainbow(length(top2013$Name))
 names(dd.col) <- top2013$Name
-g1 <- ggplot(data = top2013, aes(x= reorder(Name, Global_Sales), y=Global_Sales, fill = Name)) + geom_bar(stat="identity", show.legend = FALSE) + coord_flip() + xlab("Jeu Vidéo") + ylab("Nombre de ventes dans le monde") + ggtitle("Top 10 2013")  + scale_fill_manual("Legend", values = dd.col)
+g1 <- ggplot(data = top2013, aes(x= reorder(Name, Global_Sales), y=Global_Sales, fill = Name)) + geom_bar(stat="identity", show.legend = FALSE) + coord_flip() + xlab("Jeu Vidéo") + ylab("Nombre de ventes en M") + ggtitle("Top 10 2013")  + scale_fill_manual("Legend", values = dd.col)
 
 dd.col <- rainbow(length(top2014$Name))
 names(dd.col) <- top2014$Name
-g2 <- ggplot(data = top2014, aes(x= reorder(Name, Global_Sales), y=Global_Sales, fill = Name)) + geom_bar(stat="identity", show.legend = FALSE) + coord_flip() + xlab("Jeu Vidéo") + ylab("Nombre de ventes dans le monde") + ggtitle("Top 10 2014")  + scale_fill_manual("Legend", values = dd.col)
+g2 <- ggplot(data = top2014, aes(x= reorder(Name, Global_Sales), y=Global_Sales, fill = Name)) + geom_bar(stat="identity", show.legend = FALSE) + coord_flip() + xlab("Jeu Vidéo") + ylab("Nombre de ventes en M") + ggtitle("Top 10 2014")  + scale_fill_manual("Legend", values = dd.col)
 
 dd.col <- rainbow(length(top2015$Name))
 names(dd.col) <- top2015$Name
-g3 <- ggplot(data = top2015, aes(x= reorder(Name, Global_Sales), y=Global_Sales, fill = Name)) + geom_bar(stat="identity", show.legend = FALSE) + coord_flip() + xlab("Jeu Vidéo") + ylab("Nombre de ventes dans le monde") + ggtitle("Top 10 2015")  + scale_fill_manual("Legend", values = dd.col)
+g3 <- ggplot(data = top2015, aes(x= reorder(Name, Global_Sales), y=Global_Sales, fill = Name)) + geom_bar(stat="identity", show.legend = FALSE) + coord_flip() + xlab("Jeu Vidéo") + ylab("Nombre de ventes en M") + ggtitle("Top 10 2015")  + scale_fill_manual("Legend", values = dd.col)
 
 dd.col <- rainbow(length(top2016$Name))
 names(dd.col) <- top2016$Name
-g4 <- ggplot(data = top2016, aes(x= reorder(Name, Global_Sales), y=Global_Sales, fill = Name)) + geom_bar(stat="identity", show.legend = FALSE) + coord_flip() + xlab("Jeu Vidéo") + ylab("Nombre de ventes dans le monde") + ggtitle("Top 10 2016")  + scale_fill_manual("Legend", values = dd.col)
+g4 <- ggplot(data = top2016, aes(x= reorder(Name, Global_Sales), y=Global_Sales, fill = Name)) + geom_bar(stat="identity", show.legend = FALSE) + coord_flip() + xlab("Jeu Vidéo") + ylab("Nombre de ventes en M") + ggtitle("Top 10 2016")  + scale_fill_manual("Legend", values = dd.col)
 
-grid.arrange(g1, g2, g3, g4, ncol=2)
+grid.arrange(g1, g2, g3, g4, ncol=2, top = "Top 10 des jeux vidéo les plus vendus dans le monde par années")
 
 
 
@@ -125,13 +125,66 @@ ggplot(data = favoris_year, aes(x = Year, y = V1, color = Publisher)) +
 
 
 # Les ventes US / JP
-origin_year = subset(vgsales, Year != "N/A" & strtoi(Year) < 2016 & strtoi(Year) > 1995)
-origin_year$Year = strtoi(origin_year$Year)
-origin_us = subset(vgsales, Publisher %in% c("Electronic Arts","Activision"))
-origin_jp = subset(vgsales, Publisher %in% c("Nintendo","Sony Computer Entertainment"))
-origin_us$Publisher = "American"
-origin_jp$Publisher = "Japanese"
-origin_all = rbind(origin_us, origin_jp)
+fun_origin = function(origin_year) {
+  origin_year$Year = strtoi(origin_year$Year)
+  origin_na = subset(origin_year, Publisher %in% c("Electronic Arts","Activision"))
+  origin_jp = subset(origin_year, Publisher %in% c("Nintendo","Sony Computer Entertainment"))
+  origin_na$Publisher = "American"
+  origin_jp$Publisher = "Japanese"
+  origin_all = rbind(origin_na, origin_jp)
+  origin_syn = ddply(origin_all, c("Publisher"), function(x){c(sum(x$NA_Sales),sum(x$JP_Sales),sum(x$EU_Sales))})
+  return(origin_syn)
+}
 
+percent <- function(x, digits = 2, format = "f", ...) {
+  paste0(formatC(100 * x, format = format, digits = digits, ...), "%")
+}
+
+origin_year1 = subset(vgsales, Year != "N/A" & strtoi(Year) < 2006 & strtoi(Year) > 1995)
+origin_year2 = subset(vgsales, Year != "N/A" & strtoi(Year) < 2016 & strtoi(Year) > 2005)
+
+origin_syn1 = fun_origin(origin_year1)
+origin_syn2 = fun_origin(origin_year2)
+
+pie_theme = theme(
+  axis.title.x = element_blank(),
+  axis.title.y = element_blank(),
+  panel.border = element_blank(),
+  panel.grid=element_blank(),
+  axis.ticks = element_blank(),
+  axis.text.x=element_blank()
+)
+
+g1 = ggplot(origin_syn1, aes(x="", y=V1, fill=Publisher))+
+  coord_polar("y",start=0)+
+  geom_bar(width = 1, stat = "identity")+
+  ggtitle("Ventes en North America (1996-2005)")+
+  geom_text(aes(y = V1/2 + c(0, cumsum(V1)[-length(V1)]),label = percent(V1/sum(V1))), size=5)+
+  pie_theme
+  
+
+g2 = ggplot(origin_syn1, aes(x="", y=V2, fill=Publisher))+
+  coord_polar("y",start=0)+
+  geom_bar(width = 1, stat = "identity")+
+  ggtitle("Ventes au Japon (1996-2005)")+
+  geom_text(aes(y = V2/2 + c(0, cumsum(V2)[-length(V2)]),label = percent(V2/sum(V2))), size=5)+
+  pie_theme
+
+g3 = ggplot(origin_syn2, aes(x="", y=V1, fill=Publisher))+
+  coord_polar("y",start=0)+
+  geom_bar(width = 1, stat = "identity")+
+  ggtitle("Ventes en North America (2006-2015)")+
+  geom_text(aes(y = V1/2 + c(0, cumsum(V1)[-length(V1)]),label = percent(V1/sum(V1))), size=5)+
+  pie_theme
+
+
+g4 = ggplot(origin_syn2, aes(x="", y=V2, fill=Publisher))+
+  coord_polar("y",start=0)+
+  geom_bar(width = 1, stat = "identity")+
+  ggtitle("Ventes au Japon (2006-2015)")+
+  geom_text(aes(y = V2/2 + c(0, cumsum(V2)[-length(V2)]),label = percent(V2/sum(V2))), size=5)+
+  pie_theme
+
+grid.arrange(g1, g2, g3, g4, ncol=2, top="Volume des ventes de jeux vidéo selon leur origine (sur les 4 éditeurs les plus populaires)")
 
 
